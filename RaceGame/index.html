@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>My first three.js app</title>
+    <link rel=stylesheet href="css/base.css" />
+</head>
+<body>
+    <div id="main" class="main">
+        <canvas id="hud" class="hud"></canvas>
+        <div id="view3d" class="view3d" style="z-index:100;"></div>
+    </div>
+    <div id="stats_block" class="stats_block">
+        <table id="stats_table" class="panel_table" style="display:none"></table>
+        <div id="stats_tab" class="panel_tab" style="text-align:right">Stats</div>
+    </div>
+    <script src="./node_modules/three/build/three.js"></script>
+    <script src="./libs/dat.gui.min.js"></script>
+    <script src="./libs/controls/OrbitControls.js"></script>
+    <script src="./built/out.js"></script>
+</body>
+</html>

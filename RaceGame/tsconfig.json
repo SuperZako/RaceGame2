@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "amd",
+
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+
+    "noEmitOnError": false,
+    "removeComments": false,
+    "sourceMap": true,
+    "outFile": "built/out.js",
+    "emitBOM": true
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}
