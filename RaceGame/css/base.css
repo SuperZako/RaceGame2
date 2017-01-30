@@ -9,6 +9,14 @@
     overflow: hidden;
 }
 
+
+.gui-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
+}
+
 .hud {
     position: absolute;
     left: 0;

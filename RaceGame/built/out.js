@@ -217,8 +217,8 @@ var Config = (function () {
         this.eBrakeForce = opts.eBrakeForce || this.brakeForce / 2.5;
         this.weightTransfer = (typeof opts.weightTransfer === 'number') ? opts.weightTransfer : 0.2; // How much weight is transferred during acceleration/braking
         this.maxSteer = opts.maxSteer || 0.6; // Maximum steering angle in radians
-        this.cornerStiffnessFront = opts.cornerStiffnessFront || 5.0 * 10;
-        this.cornerStiffnessRear = opts.cornerStiffnessRear || 5.2 * 10;
+        this.cornerStiffnessFront = opts.cornerStiffnessFront || 5.0;
+        this.cornerStiffnessRear = opts.cornerStiffnessRear || 5.2;
         this.airResist = (typeof opts.airResist === 'number') ? opts.airResist : 2.5; // air resistance (* vel)
         this.rollResist = (typeof opts.rollResist === 'number') ? opts.rollResist : 8.0; // rolling resistance force (* vel)
     }
@@ -960,7 +960,11 @@ var Main;
             sky.uniforms.sunPosition.value.copy(sunSphere.position);
             Main.renderer.render(scene, Main.camera.getCamera());
         }
-        var gui = new dat.GUI();
+        var gui = new dat.GUI({ autoPlace: false });
+        var customContainer = document.getElementById('gui-container');
+        if (customContainer) {
+            customContainer.appendChild(gui.domElement);
+        }
         var skyFolder = gui.addFolder('Sky');
         skyFolder.add(effectController, "turbidity", 1.0, 20.0 /*, 0.1*/).onChange(guiChanged);
         skyFolder.add(effectController, "rayleigh", 0.0, 4 /*, 0.001*/).onChange(guiChanged);

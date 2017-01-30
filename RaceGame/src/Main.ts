@@ -227,7 +227,13 @@ namespace Main {
 
         }
 
-        var gui = new dat.GUI();
+
+        var gui = new dat.GUI({ autoPlace: false });
+        let customContainer = document.getElementById('gui-container');
+        if (customContainer) {
+            customContainer.appendChild(gui.domElement);
+        }
+
         let skyFolder = gui.addFolder('Sky');
         skyFolder.add(effectController, "turbidity", 1.0, 20.0/*, 0.1*/).onChange(guiChanged);
         skyFolder.add(effectController, "rayleigh", 0.0, 4/*, 0.001*/).onChange(guiChanged);
