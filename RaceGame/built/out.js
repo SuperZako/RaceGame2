@@ -2,7 +2,7 @@
     function Camera(scene) {
         this.positionOffset = new THREE.Vector3();
         this.targetOffset = new THREE.Vector3();
-        this.positionOffset.set(0, -10, 10);
+        this.positionOffset.set(0, -5, 5);
         // this.targetOffset.z = -1000;
         // camera
         var SCREEN_WIDTH = window.innerWidth;
@@ -190,7 +190,6 @@ var Stats = (function () {
 ///<reference path="./GMath.ts" />
 ///<reference path="./Vec2.ts" />
 ///<reference path="./Stats.ts" />
-/*global $e, GMath, Vec2, InputState */
 "use strict";
 /**
  *  Car setup params and magic constants.
@@ -514,7 +513,7 @@ var InputState = (function () {
 ///<reference path="./Physics/Car.ts" />
 ///<reference path="./Physics/InputState.ts" />
 var Car3D = (function () {
-    function Car3D(scene, url) {
+    function Car3D(scene) {
         var _this = this;
         this.inputs = new InputState();
         this.group = new THREE.Object3D();
@@ -523,20 +522,69 @@ var Car3D = (function () {
         this.car = new Car({ stats: this.stats });
         //オブジェクト
         var loader = new THREE.JSONLoader();
-        loader.load(url, function (geometry, materials) {
+        loader.load("../models/f1_1_body.json", function (geometry, materials) {
             var faceMaterial = new THREE.MultiMaterial(materials);
-            _this.mesh = new THREE.Mesh(geometry, faceMaterial);
-            _this.mesh.rotation.x = Math.PI / 2;
-            _this.group.add(_this.mesh);
+            _this.body = new THREE.Mesh(geometry, faceMaterial);
+            _this.body.rotation.x = Math.PI / 2;
+            _this.group.add(_this.body);
         });
+        loader.load("../models/f1_f_tire.json", function (geometry, materials) {
+            var faceMaterial = new THREE.MultiMaterial(materials);
+            _this.tire = new THREE.Mesh(geometry, faceMaterial);
+            _this.tire.rotation.x = Math.PI / 2;
+            _this.tire.position.set(-1, 2, 0);
+            _this.group.add(_this.tire);
+        });
+        var cubeGeometry = new THREE.CubeGeometry(5, 5, 5, 1, 1, 1);
+        var wireMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+        this.collisionCube = new THREE.Mesh(cubeGeometry, wireMaterial);
+        this.group.add(this.collisionCube);
         scene.add(this.group);
+        this.setPosition(-78, -4);
     }
+    Car3D.prototype.setPosition = function (x, y) {
+        this.car.position.set(y, x);
+    };
+    //private localToWorld(position: { x: number, y: number }) {
+    //    let x = position.y;
+    //    let y = position.x;
+    //    return { x, y };
+    //}
+    Car3D.prototype.applyCollision = function (world) {
+        var geometry = this.collisionCube.geometry;
+        var originLocalPoint = geometry.vertices[0].clone();
+        var originWorldPoint = originLocalPoint.applyMatrix4(this.group.matrix);
+        var localVertex = geometry.vertices[1].clone();
+        var globalVertex = localVertex.applyMatrix4(this.group.matrix);
+        var directionVector = globalVertex.sub(originWorldPoint);
+        var ray = new THREE.Raycaster(originWorldPoint, directionVector.clone().normalize());
+        var collisionResults = ray.intersectObjects([world]);
+        if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+            this.group.position.z = collisionResults[0].point.z;
+        }
+        //for (var vertexIndex = 1; vertexIndex < geometry.vertices.length; vertexIndex++) {
+        //    let originPoint = geometry.vertices[vertexIndex - 1].clone();
+        //    var localVertex = geometry.vertices[vertexIndex].clone();
+        //    var globalVertex = localVertex.applyMatrix4(this.collisionCube.matrix);
+        //    var directionVector = globalVertex.sub(this.collisionCube.position);
+        //    var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+        //    var collisionResults = ray.intersectObjects(collidableMeshList);
+        //    if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+        //        // appendText(" Hit ");
+        //    }
+        //}
+    };
     /**  Update game logic by delta T (millisecs) */
-    Car3D.prototype.update = function (dt) {
+    Car3D.prototype.update = function (world, dt) {
         this.car.setInputs(this.inputs);
         this.car.update(dt);
         this.group.position.set(this.car.position.y, this.car.position.x, 0);
         this.group.rotation.z = -this.car.heading;
+        this.applyCollision(world);
+        //let x = this.group.position.x;
+        //let y = this.group.position.y;
+        //let infoEl = <HTMLDivElement>document.getElementById("info");
+        //infoEl.textContent = `Position X:${x}  Y:${y}`;
     };
     return Car3D;
 }());
@@ -805,14 +853,14 @@ var Sky = (function () {
 }());
 var Ground = (function () {
     function Ground(scene, url) {
+        var _this = this;
         //オブジェクト
         var loader = new THREE.JSONLoader();
         loader.load(url, function (geometry, materials) {
             var faceMaterial = new THREE.MultiMaterial(materials);
-            var mesh = new THREE.Mesh(geometry, faceMaterial);
-            mesh.scale.set(100, 100, 100);
-            mesh.rotation.x = Math.PI / 2;
-            scene.add(mesh);
+            _this.mesh = new THREE.Mesh(geometry, faceMaterial);
+            _this.mesh.rotation.x = Math.PI / 2;
+            scene.add(_this.mesh);
         });
     }
     return Ground;
@@ -838,6 +886,7 @@ var Main;
     var directionalLight;
     Main.keyboard = new THREEx.KeyboardState();
     var car;
+    var ground;
     function createLights() {
         // ambientLight = new THREE.AmbientLight(0xffffff);
         /// scene.add(ambientLight);
@@ -917,12 +966,11 @@ var Main;
         // Add Sky Mesh
         var sky = new Sky();
         scene.add(sky.mesh);
-        car = new Car3D(scene, "../models/f1_1_body.json");
+        car = new Car3D(scene);
         Main.camera.setTarget(car);
         //var cloud = new Cloud(scene);
         //sea = new Sea(scene);
-        var ground = new Ground(scene, "../models/crs_1_land.json");
-        if (ground) { }
+        ground = new Ground(scene, "../models/crs_1_land.json");
         //if (sea) { }
         // Add Sun Helper
         var sunSphere = new THREE.Mesh(new THREE.SphereBufferGeometry(20000, 16, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
@@ -1010,7 +1058,7 @@ var Main;
         var delta = clock.getDelta();
         // controls.update();
         Main.camera.update();
-        car.update(delta * 1000);
+        car.update(ground.mesh, delta * 1000);
         // Jflight.DT = delta;
         /* 2Dコンテキスト */
         //let context = canvas.getContext("2d");

@@ -1,7 +1,8 @@
 ///<reference path="./GMath.ts" />
 ///<reference path="./Vec2.ts" />
 ///<reference path="./Stats.ts" />
-/*global $e, GMath, Vec2, InputState */
+
+
 
 "use strict";
 
@@ -64,7 +65,7 @@ class Config {
     copy(c: Car) {
         for (var k in this) {
             if (this.hasOwnProperty(k) && c.hasOwnProperty(k)) {
-                this[k] = c[k];
+                (<any>this)[k] = (<any>c)[k];
             }
         }
         return this;

@@ -9,7 +9,7 @@
 
     constructor(scene: THREE.Scene) {
 
-        this.positionOffset.set(0, -10, 10);
+        this.positionOffset.set(0, -5, 5);
         // this.targetOffset.z = -1000;
 
         // camera

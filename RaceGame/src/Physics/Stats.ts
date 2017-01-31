@@ -14,7 +14,7 @@ class Stats {
         // this.visible = false;  // starts off hidden
         // this.pairs = [];  // name/value pairs to display
         // var that = this;  // attach show/hide click handler
-        $e('stats_tab').onclick = () => { this.toggle(); };
+        $e('stats_tab')!.onclick = () => { this.toggle(); };
     }
 
     toggle() {
@@ -26,14 +26,14 @@ class Stats {
 
     show() {
         if (!this.visible) {
-            $e('stats_table').style.display = 'table';
+            $e('stats_table')!.style.display = 'table';
             this.visible = true;
         }
     }
 
     hide() {
         if (this.visible) {
-            $e('stats_table').style.display = 'none';
+            $e('stats_table')!.style.display = 'none';
             this.visible = false;
         }
     }
@@ -65,6 +65,6 @@ class Stats {
             str += '</td></tr>';
         }
 
-        $e('stats_table').innerHTML = str;
+        $e('stats_table')!.innerHTML = str;
     }
 }

@@ -41,7 +41,7 @@ namespace Main {
     export var keyboard = new THREEx.KeyboardState();
 
     let car: Car3D;
-
+    let ground: Ground;
 
     function createLights() {
         // ambientLight = new THREE.AmbientLight(0xffffff);
@@ -162,14 +162,14 @@ namespace Main {
         var sky = new Sky();
         scene.add(sky.mesh);
 
-        car = new Car3D(scene, "../models/f1_1_body.json");
+        car = new Car3D(scene);
         camera.setTarget(car);
         //var cloud = new Cloud(scene);
 
         //sea = new Sea(scene);
 
-        let ground = new Ground(scene, "../models/crs_1_land.json");
-        if (ground) { }
+        ground = new Ground(scene, "../models/crs_1_land.json");
+
         //if (sea) { }
         // Add Sun Helper
         var sunSphere = new THREE.Mesh(
@@ -286,7 +286,7 @@ namespace Main {
         // controls.update();
 
         camera.update();
-        car.update(delta * 1000);
+        car.update(ground.mesh, delta * 1000);
 
 
         // Jflight.DT = delta;

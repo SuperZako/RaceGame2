@@ -18,7 +18,7 @@ class InputState {
     copy(i: any) {
         for (var k in this) {
             if (this.hasOwnProperty(k)) {
-                this[k] = i[k];
+                (<any>this)[k] = i[k];
             }
         }
         return this;
@@ -28,7 +28,7 @@ class InputState {
     set(v: number) {
         for (var k in this) {
             if (this.hasOwnProperty(k)) {
-                this[k] = v;
+                (<any>this)[k] = v;
             }
         }
     }

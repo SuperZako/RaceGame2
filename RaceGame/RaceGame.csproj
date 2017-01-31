@@ -77,6 +77,10 @@
     <TypeScriptCompile Include="src\Camera.ts" />
     <TypeScriptCompile Include="src\Car3D.ts" />
     <TypeScriptCompile Include="src\Physics\domutil.ts" />
+    <Content Include="sounds\V10Engine.wav" />
+    <Content Include="sounds\V12Engine.wav" />
+    <Content Include="sounds\WheelSpinHigh.wav" />
+    <Content Include="sounds\WheelSpinLow.wav" />
     <Content Include="tsconfig.json" />
     <Content Include="node_modules\three\examples\fonts\droid\droid_sans_bold.typeface.json" />
     <Content Include="node_modules\three\examples\fonts\droid\droid_sans_mono_regular.typeface.json" />
@@ -216,6 +220,7 @@
     <Content Include="built\out.js.map" />
     <Content Include="models\crs_1_land.json" />
     <Content Include="models\f1_1_body.json" />
+    <Content Include="models\f1_f_tire.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
